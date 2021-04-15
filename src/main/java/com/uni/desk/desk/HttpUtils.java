@@ -3,12 +3,15 @@ package com.uni.desk.desk;
 
 
 import net.sf.json.JSONObject;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.*;
 import org.apache.http.client.utils.HttpClientUtils;
 import org.apache.http.config.Registry;
@@ -25,6 +28,7 @@ import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.ssl.SSLContexts;
 import org.apache.http.ssl.TrustStrategy;
 import org.apache.http.util.EntityUtils;
@@ -36,6 +40,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -93,44 +99,17 @@ public class HttpUtils {
         return sendHttp(HttpMethod.GET, url, header, null);
     }
 
-    /**
-     * POST请求/无参数
-     * @param url
-     * @return
-     */
-    public static String postJson(String url) {
-        return postJson(url, null, null);
-    }
 
-    /**
-     * POST请求/有参数
-     * @param url
-     * @param param
-     * @return
-     */
-    public static String postJson(String url, String param) {
-        return postJson(url, null, param);
-    }
-
-    /**
-     * POST请求/无参数带头部
-     * @param url
-     * @param header
-     * @return
-     */
-    public static String postJson(String url, Map<String, String> header) {
-        return postJson(url, header, null);
-    }
 
     /**
      * POST请求/有参数带头部
      * @param url
      * @param header
-     * @param params
+     * @param map
      * @return
      */
-    public static String postJson(String url, Map<String, String> header, String params) {
-        return sendHttp(HttpMethod.POST, url, header, params);
+    public static String postJson(String url, Map<String, String> header, Map<String,String> map) {
+        return sendHttp(HttpMethod.POST, url, header, map);
     }
 
     /**
@@ -248,13 +227,13 @@ public class HttpUtils {
      * @param httpMethod 请求方式（GET、POST、PUT、DELETE）
      * @param url        请求路径
      * @param header     请求头
-     * @param params     请求body（json数据）
+     * @param map     请求body（json数据）
      * @return 响应文本
      */
-    public static String sendHttp(HttpMethod httpMethod, String url, Map<String, String> header, String params) {
+    public static String sendHttp(HttpMethod httpMethod, String url, Map<String, String> header, Map<String,String> map) {
         String infoMessage = new StringBuilder().append("request sendHttp，url:").append(url).append("，method:").append(httpMethod.name())
-                .append("，header:").append(JSONObject.fromObject(header).toString()).append("，param:").append(params).toString();
-        log.info(infoMessage);
+                .append("，header:").append(JSONObject.fromObject(header).toString()).append("，param:").append(map.toString()).toString();
+        log.info("请求信息{}",infoMessage);
         //返回结果
         String result = null;
         long beginTime = System.currentTimeMillis();
@@ -270,9 +249,15 @@ public class HttpUtils {
                     request.setHeader(entry.getKey(), entry.getValue());
                 }
             }
-            if (StringUtils.isNotEmpty(params)) {
+            if (MapUtils.isNotEmpty(map)) {
                 if(HttpMethod.POST.equals(httpMethod) || HttpMethod.PUT.equals(httpMethod)){
-                    ((HttpEntityEnclosingRequest) request).setEntity(new StringEntity(params, contentType));
+                    List<NameValuePair> nvps = new LinkedList<NameValuePair>();
+                    if(map!=null){
+                        for (Map.Entry<String, String> entry : map.entrySet()) {
+                            nvps.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
+                        }
+                    }
+                    ((HttpEntityEnclosingRequest) request).setEntity(new UrlEncodedFormEntity(nvps, "UTF-8"));
                 }
             }
             CloseableHttpResponse response = httpClient.execute(request);

@@ -48,7 +48,8 @@ public class VideoUtils implements MultipartFile
         this.header = header;
     }
 
-    public static String base64WithoutHead(String base64Str){
+    public static String base64WithoutHead(String url){
+        String base64Str = fetchFrame(url);
         return base64Str.substring(base64Str.indexOf(",")+1,base64Str.length());
     }
     public static String fetchFrame(String videoPath) {
