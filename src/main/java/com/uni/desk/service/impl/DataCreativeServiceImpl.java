@@ -1,10 +1,24 @@
 package com.uni.desk.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.uni.desk.entity.DataCreative;
 import com.uni.desk.mapper.DataCreativeMapper;
 import com.uni.desk.service.DataCreativeService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -17,4 +31,78 @@ import org.springframework.stereotype.Service;
 @Service
 public class DataCreativeServiceImpl extends ServiceImpl<DataCreativeMapper, DataCreative> implements DataCreativeService {
 
+    /**
+     * 根据解析出来的JSON数据转换成实体类
+     * @param jsonStr
+     * @return
+     */
+    public List<DataCreative> parseStr2DataCreative(String jsonStr){
+        JSONArray objects = JSON.parseArray(jsonStr);
+        objects.forEach((obj)->{
+            DataCreative dataCreative = JSONObject.toJavaObject((JSON) obj, DataCreative.class);
+            JSONObject jsonObject = JSON.parseObject(obj.toString());
+            //获取最外层每个对象的data的list
+            List<Map> data = (List<Map>)JSONObject.parseObject(jsonObject.get("data").toString(), List.class);
+
+        });
+
+        return null;
+    }
+
+    public void setDataValue(DataCreative dataCreative,List<Map> list) throws NoSuchFieldException, InvocationTargetException, IllegalAccessException, ParseException, NoSuchMethodException {
+        Class<? extends DataCreative> creativeClass = dataCreative.getClass();
+        Field[] declaredFields = creativeClass.getDeclaredFields();
+        HashMap<String, Object> map = new HashMap<>();
+        list.forEach((obj) -> {
+            map.put(obj.get("key").toString(), obj.get("value"));
+        });
+
+
+        for (Field field : declaredFields) {
+            String name = field.getName();
+            if ("serialVersionUID".equals(name)) {
+                continue;
+            }
+            //获取字段的类型
+            Class<?> type = creativeClass.getDeclaredField(name).getType();
+
+            // 首字母大写
+            String replace = name.substring(0, 1).toUpperCase()
+                    + name.substring(1);
+            //获得setter方法
+            Method setMethod = creativeClass.getMethod("set" + replace, type);
+            //获取到form表单的所有值
+            String str = map.get(replace).toString();
+            if (str == null || "".equals(str)) {
+                // 首字母小写
+                String small = name.substring(0, 1).toLowerCase()
+                        + name.substring(1);
+                str = map.get(small).toString();
+            }
+            //通过setter方法赋值给对应的成员变量
+            if (str != null && !"".equals(str)) {
+                // ---判断读取数据的类型
+                if (type.isAssignableFrom(String.class)) {
+                    setMethod.invoke(dataCreative, str);
+                } else if (type.isAssignableFrom(int.class)
+                        || type.isAssignableFrom(Integer.class)) {
+                    setMethod.invoke(dataCreative, Integer.parseInt(str));
+                } else if (type.isAssignableFrom(Double.class)
+                        || type.isAssignableFrom(double.class)) {
+                    setMethod.invoke(dataCreative, Double.parseDouble(str));
+                } else if (type.isAssignableFrom(Boolean.class)
+                        || type.isAssignableFrom(boolean.class)) {
+                    setMethod.invoke(dataCreative, Boolean.parseBoolean(str));
+                } else if (type.isAssignableFrom(Date.class)) {
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    setMethod.invoke(dataCreative, dateFormat.parse(str));
+                } else if (type.isAssignableFrom(Timestamp.class)) {
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    setMethod.invoke(dataCreative, new Timestamp(dateFormat.parse(str).getTime()));
+                }
+
+
+            }
+        }
+    }
 }

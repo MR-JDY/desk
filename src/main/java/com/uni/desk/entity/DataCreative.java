@@ -1,12 +1,17 @@
 package com.uni.desk.entity;
 
 import java.math.BigDecimal;
+
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.uni.desk.base.BaseEntity;
 import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -23,7 +28,7 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 @TableName("ud_data_creative")
-public class DataCreative extends BaseEntity {
+public class DataCreative extends CreativeInfo {
 
     private static final long serialVersionUID=1L;
 
@@ -133,6 +138,10 @@ public class DataCreative extends BaseEntity {
     private String pageArrive;
 
 
+    /**
+     * data中数据
+     */
+    private List<JSONObject> dataList;
     @Override
     protected Serializable pkVal() {
         return null;
