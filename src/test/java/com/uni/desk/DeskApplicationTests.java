@@ -1,4 +1,4 @@
-package com.uni.desk.desk;
+package com.uni.desk;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

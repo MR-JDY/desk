@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.uni.desk.mapper.DataSummaryMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.uni.desk.entity.DataSummary">
+        <result column="id" property="id" />
+        <result column="type" property="type" />
+        <result column="cost" property="cost" />
+        <result column="transaction_amount" property="transactionAmount" />
+        <result column="ad_pv" property="adPv" />
+        <result column="ecpm" property="ecpm" />
+        <result column="click" property="click" />
+        <result column="ad_ctr" property="adCtr" />
+        <result column="ecpc" property="ecpc" />
+        <result column="convert" property="convert" />
+        <result column="convert_rate" property="convertRate" />
+        <result column="conver_cost" property="converCost" />
+        <result column="return_on_investment" property="returnOnInvestment" />
+        <result column="add_cart_volume" property="addCartVolume" />
+        <result column="favorite_baby_volume" property="favoriteBabyVolume" />
+        <result column="transaction_volume" property="transactionVolume" />
+        <result column="visit_volume" property="visitVolume" />
+        <result column="account_code" property="accountCode" />
+        <result column="account_name" property="accountName" />
+        <result column="favorite_stores" property="favoriteStores" />
+        <result column="take_order_volume" property="takeOrderVolume" />
+        <result column="take_order_amount" property="takeOrderAmount" />
+        <result column="page_arrive_uv" property="pageArriveUv" />
+        <result column="page_arrive" property="pageArrive" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,
+        type, cost, transaction_amount, ad_pv, ecpm, click, ad_ctr, ecpc, convert, convert_rate, conver_cost, return_on_investment, add_cart_volume, favorite_baby_volume, transaction_volume, visit_volume, account_code, account_name, favorite_stores, take_order_volume, take_order_amount, page_arrive_uv, page_arrive
+    </sql>
+
+</mapper>
