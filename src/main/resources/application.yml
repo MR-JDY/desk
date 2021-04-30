@@ -1,0 +1,47 @@
+server:
+  port: 8082
+
+spring:
+  #数据源
+  #如果使用p6spy的springboot包，则不需要指定url跟driver为对应所需，否则会输出两次日志
+  datasource:
+    url: jdbc:mysql://120.79.158.41:3306/desk?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&nullCatalogMeansCurrent=true&useAffectedRows=true
+    username: desk
+    password: desk
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      ## 连接池名称
+      pool-name: MyHikariCP
+      ## 数据库连接超时时间,默认30秒，即30000
+      connection-timeout: 30000
+      ## 此属性控制池中连接的最长生命周期，值0表示无限生命周期，默认1800000即30分钟
+      max-lifetime: 1800000
+      ## 此属性控制从池返回的连接的默认自动提交行为,默认值：true
+      auto-commit: true
+      ## 连接池最大连接数，默认是10
+      maximum-pool-size: 10
+      ## 空闲连接存活最大时间，默认600000（10分钟）
+      idle-timeout: 600000
+      ## 最小空闲连接数量
+      minimum-idle: 5
+
+mybatis-plus:
+  #关闭mybatisplus的控制台输出，避免与p6spy日志重复
+  #  configuration:
+  #    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: input
+      field-strategy: not_empty
+      table-underline: true #配置驼峰原则自动转换
+      db-type: mysql
+      logic-delete-field: deleted #全局逻辑删除字段值 3.3.0开始支持
+      logic-delete-value: 1 # 逻辑已删除值(默认为 1)
+      logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
+  mapper-locations: classpath*:mapper/*Mapper.xml
+  typeAliasesPackage: com.bitland.middle.*.mapper
+
+
+
+

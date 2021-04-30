@@ -1,4 +1,4 @@
-package com.uni.desk.desk;
+package com.uni.desk;
 
 
 
@@ -8,7 +8,6 @@ import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.FrameGrabber;
 import org.bytedeco.javacv.Java2DFrameConverter;
 
-import org.springframework.http.HttpRequest;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import sun.misc.BASE64Decoder;
@@ -62,7 +61,7 @@ public class VideoUtils implements MultipartFile
             int lenght = ff.getLengthInFrames();
             int i = 0;
             Frame f = null;
-            while (i < lenght) {
+            while (i < 1) {
                 // 过滤前5帧，避免出现全黑的图片
                 f = ff.grabFrame();
                 if ((i > 0) && (f.image != null)) {

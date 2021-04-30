@@ -1,4 +1,4 @@
-package com.uni.desk.desk;
+package com.uni.desk;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;

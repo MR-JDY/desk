@@ -1,8 +1,10 @@
-package com.uni.desk.desk;
+package com.uni.desk;
 
 
-import net.sf.json.JSON;
+import io.swagger.annotations.*;
+import lombok.Data;
 import net.sf.json.JSONObject;
+import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,13 +14,17 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/rec")
+@Api("识别接口")
 public class RecController {
 
     private static String BAIDU_URL = "https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic";
 
     @PostMapping("/getWords")
+    @ApiOperation(value = "查字识别")
+    @ApiImplicitParams({@ApiImplicitParam(name = "list",value = "URL集合",required = true,dataType = "List")})
     public static List<JSONObject> getWords(@RequestBody List<String> list){
-        long l = System.currentTimeMillis();
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start("识别任务");
         String token = AuthService.getAuth();
         LinkedHashMap<String,String> hashMap = new LinkedHashMap<>();
         hashMap.put("Content-Type","application/x-www-form-urlencoded");
@@ -32,10 +38,21 @@ public class RecController {
             JSONObject jsonObject = JSONObject.fromObject(s1);
             jsonObjects.add(jsonObject);
         }
-        long l1 = System.currentTimeMillis();
-        System.out.println("总计耗时："+(l1-l));
+        stopWatch.stop();
+        String s = stopWatch.prettyPrint();
+        System.out.println(s);
 
 
         return jsonObjects;
+    }
+
+    // 实体类同样可以使用注解
+    @Data
+    @ApiModel(description = "foo实体类")
+    class Foo{
+        @ApiModelProperty(value = "姓名")
+        private String name;
+        @ApiModelProperty(value = "年龄")
+        private String age;
     }
 }
