@@ -19,6 +19,7 @@ import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -85,14 +86,17 @@ public class RecController {
     }
 
 
-    @GetMapping("/importExcel")
-//    @Test
+//    @GetMapping("/importExcel")
+    @Test
     public void indexOrNameRead() {
 
 //        LocalDateTime date = LocalDateTime.parse("2021-04-28", formatter);
-        String fileName = "/Users/xiangqiaogao/Coding/desk/src/main/resources/report#理然#理然-发型喷雾01#30天.xls";
+        String filePath = "/Users/xiangqiaogao/Coding/desk/src/main/resources/report#理然#理然-发型喷雾01#30天.xls";
+        File file = new File(filePath);
+        String name = file.getName();
+        String fileName = filePath.substring(filePath.lastIndexOf("\\")+1);
         // 这里默认读取第一个sheet
-        EasyExcel.read(fileName, ReportCampaign.class, new ReportCampaignListener(reportCampaignService)).sheet().headRowNumber(1).doRead();
+        EasyExcel.read(filePath, ReportCampaign.class, new ReportCampaignListener(reportCampaignService)).sheet().headRowNumber(1).doRead();
     }
 //    getResourceAsStream("com/test/demo/test.properties")
     @Test
