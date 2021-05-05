@@ -9,6 +9,7 @@ import com.uni.desk.entity.DataCreative;
 import com.uni.desk.entity.ReportCampaign;
 import com.uni.desk.listener.ReportCampaignListener;
 import com.uni.desk.service.DataCreativeService;
+import com.uni.desk.service.ReportCampaignService;
 import com.uni.desk.util.JsonUtil;
 import io.swagger.annotations.*;
 import lombok.Data;
@@ -27,6 +28,10 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
 import java.util.*;
 
 @RestController
@@ -38,7 +43,8 @@ public class RecController {
 
     @Resource
     private DataCreativeService dataCreativeService;
-
+    @Resource
+    private ReportCampaignService reportCampaignService;
 
     @PostMapping("/getWords")
     @ApiOperation(value = "查字识别")
@@ -79,12 +85,14 @@ public class RecController {
     }
 
 
-//    @GetMapping("/importExcel")
-    @Test
+    @GetMapping("/importExcel")
+//    @Test
     public void indexOrNameRead() {
+
+//        LocalDateTime date = LocalDateTime.parse("2021-04-28", formatter);
         String fileName = "/Users/xiangqiaogao/Coding/desk/src/main/resources/report#理然#理然-发型喷雾01#30天.xls";
         // 这里默认读取第一个sheet
-        EasyExcel.read(fileName, ReportCampaign.class, new ReportCampaignListener()).sheet().doRead();
+        EasyExcel.read(fileName, ReportCampaign.class, new ReportCampaignListener(reportCampaignService)).sheet().headRowNumber(1).doRead();
     }
 //    getResourceAsStream("com/test/demo/test.properties")
     @Test

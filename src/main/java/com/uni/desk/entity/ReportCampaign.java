@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.uni.desk.base.BaseEntity;
 import java.io.Serializable;
+
+import com.uni.desk.converter.CustomStr2DateConverter;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -50,8 +52,8 @@ public class ReportCampaign extends BaseEntity {
     /**
      * 数据日期
      */
-    @DateTimeFormat
-    @ExcelProperty("日期")
+    @DateTimeFormat("yyyy-MM-dd")
+    @ExcelProperty(value = "日期",converter = CustomStr2DateConverter.class)
     private LocalDateTime date;
 
     /**

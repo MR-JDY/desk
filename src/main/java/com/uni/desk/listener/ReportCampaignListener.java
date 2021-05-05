@@ -16,9 +16,9 @@ import java.util.List;
 public class ReportCampaignListener extends AnalysisEventListener<ReportCampaign> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ReportCampaignListener.class);
     /**
-     * 每隔5条存储数据库，实际使用中可以3000条，然后清理list ，方便内存回收
+     * 每隔1000条存储数据库，实际使用中可以3000条，然后清理list ，方便内存回收
      */
-    private static final int BATCH_COUNT = 5;
+    private static final int BATCH_COUNT = 1000;
     List<ReportCampaign> list = new ArrayList<ReportCampaign>();
     /**
      * 假设这个是一个DAO，当然有业务逻辑这个也可以是一个service。当然如果不用存储这个对象没用。
