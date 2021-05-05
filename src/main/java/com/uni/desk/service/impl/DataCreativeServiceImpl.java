@@ -12,13 +12,12 @@ import org.springframework.stereotype.Service;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <p>
@@ -38,28 +37,37 @@ public class DataCreativeServiceImpl extends ServiceImpl<DataCreativeMapper, Dat
      */
     public List<DataCreative> parseStr2DataCreative(String jsonStr){
         JSONArray objects = JSON.parseArray(jsonStr);
+        ArrayList<DataCreative> creativeArrayList = new ArrayList<>(500);
         objects.forEach((obj)->{
             DataCreative dataCreative = JSONObject.toJavaObject((JSON) obj, DataCreative.class);
             JSONObject jsonObject = JSON.parseObject(obj.toString());
             //获取最外层每个对象的data的list
             List<Map> data = (List<Map>)JSONObject.parseObject(jsonObject.get("data").toString(), List.class);
+            try {
+                setDataValue(dataCreative,data);
+                creativeArrayList.add(dataCreative);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
         });
 
-        return null;
+        return creativeArrayList;
     }
-
-    public void setDataValue(DataCreative dataCreative,List<Map> list) throws NoSuchFieldException, InvocationTargetException, IllegalAccessException, ParseException, NoSuchMethodException {
+    public void setDataValue(DataCreative dataCreative, List<Map> list) throws Exception {
         Class<? extends DataCreative> creativeClass = dataCreative.getClass();
         Field[] declaredFields = creativeClass.getDeclaredFields();
         HashMap<String, Object> map = new HashMap<>();
         list.forEach((obj) -> {
             map.put(obj.get("key").toString(), obj.get("value"));
         });
-
+        if(map.containsKey("convert")){
+            map.put("convertVolume",map.get("convert"));
+        }
 
         for (Field field : declaredFields) {
             String name = field.getName();
+
             if ("serialVersionUID".equals(name)) {
                 continue;
             }
@@ -72,13 +80,21 @@ public class DataCreativeServiceImpl extends ServiceImpl<DataCreativeMapper, Dat
             //获得setter方法
             Method setMethod = creativeClass.getMethod("set" + replace, type);
             //获取到form表单的所有值
-            String str = map.get(replace).toString();
+            String str = Optional.ofNullable(map.get(name)).orElse("").toString();
+
             if (str == null || "".equals(str)) {
                 // 首字母小写
                 String small = name.substring(0, 1).toLowerCase()
                         + name.substring(1);
-                str = map.get(small).toString();
+                str = Optional.ofNullable(map.get(small)).orElse("").toString();;
             }
+            str = str.replaceAll("%", "");
+            if("-".equals(str)){
+
+                str = str.replaceAll("-", "0");
+            }
+            str = str.replaceAll(",", "");
+
             //通过setter方法赋值给对应的成员变量
             if (str != null && !"".equals(str)) {
                 // ---判断读取数据的类型
@@ -99,10 +115,15 @@ public class DataCreativeServiceImpl extends ServiceImpl<DataCreativeMapper, Dat
                 } else if (type.isAssignableFrom(Timestamp.class)) {
                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     setMethod.invoke(dataCreative, new Timestamp(dateFormat.parse(str).getTime()));
+                }else if(type.isAssignableFrom(BigDecimal.class)){
+                    setMethod.invoke(dataCreative,BigDecimal.valueOf(Double.parseDouble(str)));
+                }else if(type.isAssignableFrom(Long.class)){
+                    setMethod.invoke(dataCreative,Long.valueOf(str));
                 }
 
 
             }
         }
     }
+
 }

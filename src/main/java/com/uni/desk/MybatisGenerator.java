@@ -29,9 +29,10 @@ public class MybatisGenerator {
     private static final String author = "Joe";
 
         private static final String path = System.getProperty("user.dir");
+//        private static final String path = "/Users/xiangqiaogao/Coding/desk";
 //    private static final String path = "D:\\BitlandCloud\\bitland-middle-process\\flowable";
     private static final String tablePrefix = "ud";
-    private static final String[] tableName = {"ud_creative_info","ud_data_creative","ud_data_summary"};
+    private static final String[] tableName = {"ud_report_campaign"};
 
     @Test
     public void testGenerator() {
@@ -40,7 +41,8 @@ public class MybatisGenerator {
         config.setActiveRecord(true)//开启AR模式
                 .setAuthor(author)//设置作者
                 //生成路径(一般都是生成在此项目的src/main/java下面)
-                .setOutputDir(path + "\\src\\main\\java")
+                .setOutputDir(path + "\\src\\main\\java")//windows下
+//                .setOutputDir(path + "/src/main/java")//mac下
                 .setFileOverride(false)//第二次生成会把第一次生成的覆盖掉
                 .setIdType(IdType.INPUT)//主键策略
                 .setServiceName("%sService")//生成的service接口名字首字母是否为I，这样设置就没有I

@@ -28,14 +28,61 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 @TableName("ud_data_creative")
-public class DataCreative extends CreativeInfo {
+public class DataCreative extends BaseEntity {
 
     private static final long serialVersionUID=1L;
 
     /**
-     * ud创意ID
+     * UD创意ID
      */
     private String udId;
+
+    /**
+     * 媒体创意ID
+     */
+    private String directCreativeId;
+
+    /**
+     * 创意名称
+
+
+     */
+    private String creativeName;
+
+    /**
+     * 账户名称
+     */
+    private String accountName;
+
+    /**
+     * 计划组ID
+     */
+    private Integer adgroupId;
+
+    /**
+     * 计划组名称
+     */
+    private String adgroupName;
+
+    /**
+     * 计划ID
+     */
+    private Integer campaignId;
+
+    /**
+     * 计划名称
+     */
+    private String campaignName;
+
+    /**
+     * 临时视频链接（定时失效）
+     */
+    private String video;
+
+    /**
+     * 投放状态
+     */
+    private String status;
 
     /**
      * 消耗（元）
@@ -75,7 +122,7 @@ public class DataCreative extends CreativeInfo {
     /**
      * 转化数
      */
-    private Integer convert;
+    private Integer convertVolume;
 
     /**
      * 转化率
@@ -85,7 +132,7 @@ public class DataCreative extends CreativeInfo {
     /**
      * 转化成本（元）
      */
-    private BigDecimal converCost;
+    private BigDecimal convertCost;
 
     /**
      * 投资回报率

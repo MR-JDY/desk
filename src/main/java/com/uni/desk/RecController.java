@@ -1,25 +1,29 @@
 package com.uni.desk;
 
 
+import com.alibaba.excel.EasyExcel;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.uni.desk.entity.DataCreative;
+import com.uni.desk.entity.ReportCampaign;
+import com.uni.desk.listener.ReportCampaignListener;
+import com.uni.desk.service.DataCreativeService;
 import com.uni.desk.util.JsonUtil;
 import io.swagger.annotations.*;
 import lombok.Data;
 import org.junit.Test;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StopWatch;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -31,6 +35,10 @@ import java.util.*;
 public class RecController {
 
     private static String BAIDU_URL = "https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic";
+
+    @Resource
+    private DataCreativeService dataCreativeService;
+
 
     @PostMapping("/getWords")
     @ApiOperation(value = "查字识别")
@@ -59,13 +67,33 @@ public class RecController {
 
         return jsonObjects;
     }
+    @GetMapping("/importCreative")
+    @ApiOperation(value = "导入创意JSON")
+    @Transactional(rollbackFor = SQLException.class)
+    public String importCreative(){
+        String jsonStr = JsonUtil.readJsonFile("/Users/xiangqiaogao/Coding/desk/src/main/resources/A.json");
+        List<DataCreative> dataCreatives = dataCreativeService.parseStr2DataCreative(jsonStr);
+//        dataCreativeService.save(dataCreatives.get(0));
+        dataCreativeService.saveBatch(dataCreatives);
+        return "成功";
+    }
+
+
+//    @GetMapping("/importExcel")
+    @Test
+    public void indexOrNameRead() {
+        String fileName = "/Users/xiangqiaogao/Coding/desk/src/main/resources/report#理然#理然-发型喷雾01#30天.xls";
+        // 这里默认读取第一个sheet
+        EasyExcel.read(fileName, ReportCampaign.class, new ReportCampaignListener()).sheet().doRead();
+    }
 //    getResourceAsStream("com/test/demo/test.properties")
     @Test
     public  void readJsonFile(){
 //        String path = this.getClass().getClassLoader().getResource("").getPath();
-        String jsonStr = JsonUtil.readJsonFile("E:/coding/projects_idea/desk/src/main/resources/A.json");
-
+//        String jsonStr = JsonUtil.readJsonFile("E:/coding/projects_idea/desk/src/main/resources/A.json");
+        String jsonStr = JsonUtil.readJsonFile("/Users/xiangqiaogao/Coding/desk/src/main/resources/A.json");
         JSONArray objects = JSON.parseArray(jsonStr);
+        ArrayList<DataCreative> creativeArrayList = new ArrayList<>(500);
         objects.forEach((obj)->{
             DataCreative dataCreative = JSONObject.toJavaObject((JSON) obj, DataCreative.class);
             JSONObject jsonObject = JSON.parseObject(obj.toString());
@@ -73,6 +101,7 @@ public class RecController {
             List<Map> data = (List<Map>)JSONObject.parseObject(jsonObject.get("data").toString(), List.class);
             try {
                 setDataValue(dataCreative,data);
+                creativeArrayList.add(dataCreative);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -103,7 +132,7 @@ public class RecController {
             //获得setter方法
             Method setMethod = creativeClass.getMethod("set" + replace, type);
             //获取到form表单的所有值
-            String str = Optional.ofNullable(map.get(replace)).orElse("").toString();
+            String str = Optional.ofNullable(map.get(name)).orElse("").toString();
 
             if (str == null || "".equals(str)) {
                 // 首字母小写
@@ -112,7 +141,11 @@ public class RecController {
                 str = Optional.ofNullable(map.get(small)).orElse("").toString();;
             }
             str = str.replaceAll("%", "");
-            str = str.replaceAll("-", "");
+            if("-".equals(str)){
+
+                str = str.replaceAll("-", "0");
+            }
+            str = str.replaceAll(",", "");
             System.out.println("实例："+str);
             //通过setter方法赋值给对应的成员变量
             if (str != null && !"".equals(str)) {
@@ -136,6 +169,8 @@ public class RecController {
                     setMethod.invoke(dataCreative, new Timestamp(dateFormat.parse(str).getTime()));
                 }else if(type.isAssignableFrom(BigDecimal.class)){
                     setMethod.invoke(dataCreative,BigDecimal.valueOf(Double.parseDouble(str)));
+                }else if(type.isAssignableFrom(Long.class)){
+                    setMethod.invoke(dataCreative,Long.valueOf(str));
                 }
 
 

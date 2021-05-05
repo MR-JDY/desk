@@ -25,7 +25,7 @@ public class BaseEntity extends Model {
     //id 主键  暂定主键是UUID 具体生成方案待定 TODO
     @TableId(value = "id", type = IdType.ASSIGN_UUID)
     private String id ;
-
+/*
     //创建人
     @TableField(fill = FieldFill.INSERT)
     private String createdBy;
@@ -61,7 +61,7 @@ public class BaseEntity extends Model {
         this.lastModifiedBy = null;
         this.lastModifiedDate = null;
         return this;
-    }
+    }*/
 
     @Override
     protected Serializable pkVal() {

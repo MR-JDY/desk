@@ -77,6 +77,16 @@
         "value": "419.00"
       },
       {
+        "key": "visitVolume",
+        "name": "成交订单金额",
+        "value": "419,872"
+      },
+      {
+        "key": "convertRate",
+        "name": "成交订单金额",
+        "value": "41%"
+      },
+      {
         "key": "favoriteStores",
         "name": "收藏店铺量",
         "value": "0"
@@ -98,7 +108,7 @@
       }
     ],
     "directCreativeId": "1696800400875565",
-    "id": "4235241",
+    "id": "42352412",
     "status": "广告计划暂停",
     "video": "https://v3-default.ixigua.com/e33caa7a6f93f6858c43405f8f60bd5a/608a899f/video/tos/cn/tos-cn-ve-51/e6d1767b1dcb492797dcf50ccc156d5a/?a=0&br=2701&bt=2701&cd=0%7C0%7C1&ch=0&cr=0&cs=0&cv=1&dr=0&ds=4&er=&l=202104291724380101501581974A00096F&lr=ad&mime_type=video_mp4&net=0&pl=0&qs=0&rc=M3BxdzVvdXQ2NDMzNDYzM0ApZTU3OzgzNjs1NzM8NWg0O2cyXnFeY2plb2pgLS1kMDBzcy8wYDBhYzRjMTIwMTJiYzM6Yw%3D%3D&vl=&vr="
   }

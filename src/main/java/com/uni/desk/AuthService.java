@@ -1,5 +1,6 @@
 package com.uni.desk;
-import org.json.JSONObject;
+
+import com.alibaba.fastjson.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -70,7 +71,7 @@ public class AuthService {
              * 返回结果示例
              */
             System.err.println("result:" + result);
-            JSONObject jsonObject = new JSONObject(result);
+            JSONObject jsonObject = JSONObject.parseObject(result);
             String access_token = jsonObject.getString("access_token");
             return access_token;
         } catch (Exception e) {

@@ -13,9 +13,9 @@
         <result column="click" property="click" />
         <result column="ad_ctr" property="adCtr" />
         <result column="ecpc" property="ecpc" />
-        <result column="convert" property="convert" />
+        <result column="convert_volume" property="convert" />
         <result column="convert_rate" property="convertRate" />
-        <result column="conver_cost" property="converCost" />
+        <result column="convert_cost" property="convertCost" />
         <result column="return_on_investment" property="returnOnInvestment" />
         <result column="add_cart_volume" property="addCartVolume" />
         <result column="favorite_baby_volume" property="favoriteBabyVolume" />
@@ -31,7 +31,7 @@
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id,
-        ud_id, cost, transaction_amount, ad_pv, ecpm, click, ad_ctr, ecpc, convert, convert_rate, conver_cost, return_on_investment, add_cart_volume, favorite_baby_volume, transaction_volume, visit_volume, favorite_stores, take_order_volume, take_order_amount, page_arrive_uv, page_arrive
+        ud_id, cost, transaction_amount, ad_pv, ecpm, click, ad_ctr, ecpc, convert, convert_rate, convert_cost, return_on_investment, add_cart_volume, favorite_baby_volume, transaction_volume, visit_volume, favorite_stores, take_order_volume, take_order_amount, page_arrive_uv, page_arrive
     </sql>
 
 </mapper>
