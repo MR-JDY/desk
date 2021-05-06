@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.extension.activerecord.Model;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.uni.desk.base.BaseEntity;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -183,7 +184,14 @@ public class DataCreative extends BaseEntity {
      * 页面到达量
      */
     private String pageArrive;
-
+    /**
+     * 批次号
+     */
+    private Long batchNum;
+    /**
+     * 最后修改时间
+     */
+    private LocalDateTime lastModifiedDate;
 
     /**
      * data中数据

@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * </p>
  *
  * @author Joe
- * @since 2021-04-30
+ * @since 2021-05-06
  */
 public interface DataSummaryMapper extends BaseMapper<DataSummary> {
 

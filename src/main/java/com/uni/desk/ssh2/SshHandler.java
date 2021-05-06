@@ -1,14 +1,10 @@
 package com.uni.desk.ssh2;
 
 
-import ch.ethz.ssh2.SCPInputStream;
 import com.trilead.ssh2.*;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.ConnectException;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -151,7 +147,7 @@ public class SshHandler {
      * @param suffix 需要获取的文件的后缀名
      * @return
      */
-    public static Set<String> getFileAbsolutePaths(String dir,Connection conn,String suffix) throws IOException {
+    public static Set<String> getFileAbsolutePaths(String dir,Connection conn,String suffix,String prefix) throws IOException {
         //处理directory后面的"/"号
         if(!dir.endsWith("/")){
             dir += "/";
@@ -161,11 +157,23 @@ public class SshHandler {
         Vector ls = client.ls(directory);
         Set collect = (Set) ls.stream().filter(obj-> {
             SFTPv3DirectoryEntry obj1 = (SFTPv3DirectoryEntry) obj;
-            return obj1.filename.endsWith(suffix);
+            return obj1.filename.endsWith(suffix) && obj1.filename.startsWith(prefix);
         }).map(entry -> {
             SFTPv3DirectoryEntry entry1 = (SFTPv3DirectoryEntry) entry;
             return directory + entry1.filename;
         }).collect(Collectors.toSet());
         return collect;
+    }
+
+    /**
+     * 从路径中提取文件名
+     * @param filePath
+     * @return
+     */
+    public static String extractFileName(String filePath){
+        File file = new File(filePath);
+        String name = file.getName();
+        String fileName = filePath.substring(filePath.lastIndexOf("\\")+1);
+        return fileName;
     }
 }

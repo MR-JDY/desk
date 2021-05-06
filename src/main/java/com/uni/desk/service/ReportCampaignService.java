@@ -3,6 +3,8 @@ package com.uni.desk.service;
 import com.uni.desk.entity.ReportCampaign;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.io.IOException;
+
 /**
  * <p>
  *  服务类
@@ -13,4 +15,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ReportCampaignService extends IService<ReportCampaign> {
 
+    String importCampaignXls();
 }

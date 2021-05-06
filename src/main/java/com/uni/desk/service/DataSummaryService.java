@@ -9,8 +9,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * </p>
  *
  * @author Joe
- * @since 2021-04-30
+ * @since 2021-05-06
  */
 public interface DataSummaryService extends IService<DataSummary> {
 
+    void importSummary();
 }

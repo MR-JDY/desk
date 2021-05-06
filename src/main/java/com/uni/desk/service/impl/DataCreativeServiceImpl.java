@@ -5,12 +5,18 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.metaparadigm.jsonrpc.JSONSerializer;
 import com.metaparadigm.jsonrpc.MarshallException;
+import com.uni.desk.base.CommonBusinessException;
+import com.uni.desk.base.CommonErrorCode;
 import com.uni.desk.entity.DataCreative;
 import com.uni.desk.mapper.DataCreativeMapper;
 import com.uni.desk.service.DataCreativeService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.uni.desk.ssh2.SshServer;
+import com.uni.desk.util.ReflectUtils;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -18,6 +24,8 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
@@ -31,6 +39,18 @@ import java.util.*;
 @Service
 public class DataCreativeServiceImpl extends ServiceImpl<DataCreativeMapper, DataCreative> implements DataCreativeService {
 
+    public String DIR = "/opt/tb/data/2021-04-28";
+    public String SUFFIX = ".json";
+    public String PREFIX = "summary";
+    @Resource
+    private SshServer sshServer;
+    @Resource
+    private ReflectUtils reflectUtils;
+    private Long batchNum;
+    {
+        String currentDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        batchNum = Long.parseLong(currentDate);
+    }
     /**
      * 根据解析出来的JSON数据转换成实体类
      * @param jsonStr
@@ -45,7 +65,8 @@ public class DataCreativeServiceImpl extends ServiceImpl<DataCreativeMapper, Dat
             //获取最外层每个对象的data的list
             List<Map> data = (List<Map>)JSONObject.parseObject(jsonObject.get("data").toString(), List.class);
             try {
-                setDataValue(dataCreative,data);
+                reflectUtils.convertMap2Model(dataCreative,data);
+                dataCreative.setBatchNum(batchNum);
                 creativeArrayList.add(dataCreative);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -54,6 +75,33 @@ public class DataCreativeServiceImpl extends ServiceImpl<DataCreativeMapper, Dat
         });
 
         return creativeArrayList;
+    }
+
+    /**
+     * 导入远程昨天所有的创意汇总数据
+     */
+    @Override
+    public void importCreative() {
+        //遍历对应目录下所有以.json结尾的文件
+        Set<String> fileAbsolutePaths = null;
+        try {
+            fileAbsolutePaths = sshServer.getFileAbsolutePaths(DIR, PREFIX, SUFFIX);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new CommonBusinessException(CommonErrorCode.EXCEL_ERROR.withArgs("Excel导入失败"));
+        }
+
+        for(String path:fileAbsolutePaths){
+            InputStream inputStream = sshServer.readFile(path);
+            try {
+                String jsonStr = JSON.parseObject(inputStream, String.class, null).toString();
+                List<DataCreative> dataCreatives = parseStr2DataCreative(jsonStr);
+                saveBatch(dataCreatives);
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new CommonBusinessException(CommonErrorCode.INVALID_FORMAT.withArgs("数据转换异常"));
+            }
+        }
     }
 
     /**
@@ -72,7 +120,7 @@ public class DataCreativeServiceImpl extends ServiceImpl<DataCreativeMapper, Dat
         }
         return jsonStr;
     }
-    public void setDataValue(DataCreative dataCreative, List<Map> list) throws Exception {
+/*    public void setDataValue(DataCreative dataCreative, List<Map> list) throws Exception {
         Class<? extends DataCreative> creativeClass = dataCreative.getClass();
         Field[] declaredFields = creativeClass.getDeclaredFields();
         HashMap<String, Object> map = new HashMap<>();
@@ -142,6 +190,6 @@ public class DataCreativeServiceImpl extends ServiceImpl<DataCreativeMapper, Dat
 
             }
         }
-    }
+    }*/
 
 }

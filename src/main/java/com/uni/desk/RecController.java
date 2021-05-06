@@ -7,14 +7,17 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.metaparadigm.jsonrpc.JSONSerializer;
 import com.trilead.ssh2.Connection;
+import com.uni.desk.base.BaseEntity;
 import com.uni.desk.entity.DataCreative;
 import com.uni.desk.entity.DataSummary;
 import com.uni.desk.entity.ReportCampaign;
 import com.uni.desk.listener.ReportCampaignListener;
 import com.uni.desk.service.DataCreativeService;
+import com.uni.desk.service.DataSummaryService;
 import com.uni.desk.service.ReportCampaignService;
 import com.uni.desk.ssh2.SshHandler;
 import com.uni.desk.util.JsonUtil;
+import com.uni.desk.util.ReflectUtils;
 import io.swagger.annotations.*;
 import lombok.Data;
 import org.junit.Test;
@@ -52,7 +55,16 @@ public class RecController {
     private DataCreativeService dataCreativeService;
     @Resource
     private ReportCampaignService reportCampaignService;
+    @Resource
+    private DataSummaryService dataSummaryService;
+    @Resource
+    private ReflectUtils reflectUtils;
 
+    /**
+     * 根据视频Url截取第一帧进行文字识别
+     * @param list
+     * @return
+     */
     @PostMapping("/getWords")
     @ApiOperation(value = "查字识别")
     @ApiImplicitParams({@ApiImplicitParam(name = "list",value = "URL集合",required = true,dataType = "List")})
@@ -70,7 +82,6 @@ public class RecController {
             map.put("image",s);
             String s1 = HttpUtils.sendHttp(HttpUtils.HttpMethod.POST, BAIDU_URL, hashMap,map);
             JSONObject jsonObject = JSONObject.parseObject(s1);
-//            JSONObject jsonObject = JSONObject.fromObject(s1);
             jsonObjects.add(jsonObject);
         }
         stopWatch.stop();
@@ -80,19 +91,40 @@ public class RecController {
 
         return jsonObjects;
     }
+
+    /**
+     * 导入创意JSON
+     * @return
+     */
     @GetMapping("/importCreative")
     @ApiOperation(value = "导入创意JSON")
     @Transactional(rollbackFor = SQLException.class)
     public String importCreative(){
-        String jsonStr = JsonUtil.readJsonFile("/Users/xiangqiaogao/Coding/desk/src/main/resources/A.json");
+        dataCreativeService.importCreative();
+        /*String jsonStr = JsonUtil.readJsonFile("/Users/xiangqiaogao/Coding/desk/src/main/resources/A.json");
         List<DataCreative> dataCreatives = dataCreativeService.parseStr2DataCreative(jsonStr);
-//        dataCreativeService.save(dataCreatives.get(0));
-        dataCreativeService.saveBatch(dataCreatives);
+        dataCreativeService.saveBatch(dataCreatives);*/
         return "成功";
     }
 
+    /**
+     * 导入计划的所有信息
+     * @return
+     */
+    @GetMapping("/importCampaignXls")
+    @ApiOperation(value = "导入计划的Excel表信息")
+//    @Transactional(rollbackFor = Exception.class)
+    public String importCampaignXls(){
+        String s = reportCampaignService.importCampaignXls();
+        return s;
+    }
 
-//    @GetMapping("/importExcel")
+    @GetMapping("/importSummary")
+    @ApiOperation(value = "导入每十分钟更新的数据汇总")
+    public String importSummary(){
+        dataSummaryService.importSummary();
+        return null;
+    }
     @Test
     public void indexOrNameRead() {
 
@@ -102,7 +134,7 @@ public class RecController {
         String name = file.getName();
         String fileName = filePath.substring(filePath.lastIndexOf("\\")+1);
         // 这里默认读取第一个sheet
-        EasyExcel.read(filePath, ReportCampaign.class, new ReportCampaignListener(reportCampaignService)).sheet().headRowNumber(1).doRead();
+        EasyExcel.read(filePath, ReportCampaign.class, new ReportCampaignListener(reportCampaignService,null)).sheet().headRowNumber(1).doRead();
     }
 //    getResourceAsStream("com/test/demo/test.properties")
 
@@ -115,7 +147,7 @@ public class RecController {
         InputStream inputStream = SshHandler.readFile(conn, "/opt/tb/data/2021-04-28/report#润百颜#润百颜377次抛01#7天.xls", "10.125.25.38");
 
         // 这里默认读取第一个sheet
-        EasyExcel.read(inputStream, ReportCampaign.class, new ReportCampaignListener(reportCampaignService)).sheet().headRowNumber(1).doRead();
+        EasyExcel.read(inputStream, ReportCampaign.class, new ReportCampaignListener(reportCampaignService,null)).sheet().headRowNumber(1).doRead();
     }
     @Test
     public void getJsonStr() throws Exception {
@@ -133,8 +165,8 @@ public class RecController {
         Object o = JSON.parseObject(inputStream, String.class, null);
         List<Map> data = (List<Map>)JSONObject.parseObject(o.toString(),List.class,null);
         DataSummary dataSummary = new DataSummary();
-        setDataValue2(dataSummary,data);
-        System.out.println(dataSummary.toString());
+        Object o1 = reflectUtils.convertMap2Model(dataSummary, data);
+
     }
     @Test
     public void getRemoteFiles() throws IOException {

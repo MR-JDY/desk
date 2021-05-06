@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.extension.activerecord.Model;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.uni.desk.base.BaseEntity;
 import java.io.Serializable;
+import java.time.LocalDateTime;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -78,6 +80,14 @@ public class CreativeInfo extends BaseEntity {
      */
     private String status;
 
+    /**
+     * 批次号
+     */
+    private Integer batchNum;
+    /**
+     * 最后修改时间
+     */
+    private LocalDateTime lastModifiedDate;
 
     @Override
     protected Serializable pkVal() {

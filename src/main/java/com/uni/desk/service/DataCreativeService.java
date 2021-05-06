@@ -16,4 +16,6 @@ import java.util.List;
 public interface DataCreativeService extends IService<DataCreative> {
 
     List<DataCreative> parseStr2DataCreative(String jsonStr);
+
+    void importCreative();
 }

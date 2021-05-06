@@ -4,12 +4,12 @@ import java.math.BigDecimal;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.uni.desk.base.BaseEntity;
 import java.io.Serializable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.experimental.Accessors;
 
 /**
  * <p>
@@ -17,15 +17,14 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author Joe
- * @since 2021-04-30
+ * @since 2021-05-06
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@Accessors(chain = true)
 @TableName("ud_data_summary")
 public class DataSummary extends BaseEntity {
 
-    private static final long serialVersionUID=1L;
+    private static final long serialVersionUID = 1L;
 
     /**
      * 数据汇总的类型：分为计划组、计划、创意，分别用GROUP_PLAN,PLAN,CREATIVE
@@ -70,7 +69,7 @@ public class DataSummary extends BaseEntity {
     /**
      * 转化数
      */
-    private Integer convert;
+    private Integer convertVolume;
 
     /**
      * 转化率
@@ -141,6 +140,16 @@ public class DataSummary extends BaseEntity {
      * 页面到达量
      */
     private String pageArrive;
+
+    /**
+     * 批次号
+     */
+    private Long batchNum;
+
+    /**
+     * 最新更新时间
+     */
+    private LocalDateTime lastModifiedDate;
 
 
     @Override

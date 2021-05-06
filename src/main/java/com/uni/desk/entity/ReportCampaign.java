@@ -181,6 +181,20 @@ public class ReportCampaign extends BaseEntity {
     @ExcelProperty("播完率")
     private BigDecimal finishedRate;
 
+    /**
+     * 批次号
+     */
+    private Long batchNum;
+    /**
+     * 最后修改时间
+     */
+    private LocalDateTime lastModifiedDate;
+
+    /**
+     * 数据类型，7天,15天,30天等
+     * @return
+     */
+    private String dataType;
 
     @Override
     protected Serializable pkVal() {

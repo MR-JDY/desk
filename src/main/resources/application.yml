@@ -43,5 +43,8 @@ mybatis-plus:
   typeAliasesPackage: com.uni.desk.mapper
 
 
-
-
+#存放unidesk数据的服务器信息
+server-info:
+  ip: 10.125.25.38
+  username: jcadmin
+  password: admin
