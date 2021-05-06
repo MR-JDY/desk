@@ -74,6 +74,11 @@
             <classifier>jdk15</classifier>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
         <!-- 与远程linux服务器进行交互 -->
         <!--<dependency>
             <groupId>ch.ethz.ganymed</groupId>
