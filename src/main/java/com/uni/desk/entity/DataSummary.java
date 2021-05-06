@@ -80,7 +80,7 @@ public class DataSummary extends BaseEntity {
     /**
      * 转化成本（元）
      */
-    private BigDecimal converCost;
+    private BigDecimal convertCost;
 
     /**
      * 投资回报率

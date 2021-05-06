@@ -3,19 +3,20 @@ package com.uni.desk.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.metaparadigm.jsonrpc.JSONSerializer;
+import com.metaparadigm.jsonrpc.MarshallException;
 import com.uni.desk.entity.DataCreative;
 import com.uni.desk.mapper.DataCreativeMapper;
 import com.uni.desk.service.DataCreativeService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
+import java.io.InputStream;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -53,6 +54,23 @@ public class DataCreativeServiceImpl extends ServiceImpl<DataCreativeMapper, Dat
         });
 
         return creativeArrayList;
+    }
+
+    /**
+     * 将远程获取的文件流转成String类型的Json字符串
+     * @param inputStream
+     * @return
+     */
+    public String parseInputStream2Str(InputStream inputStream){
+        JSONSerializer jsonSerializer = new JSONSerializer();
+        String jsonStr = "";
+        try {
+            jsonStr = jsonSerializer.toJSON(inputStream);
+        } catch (MarshallException e) {
+            e.printStackTrace();
+            log.error("InputStream 转换 Json 失败");
+        }
+        return jsonStr;
     }
     public void setDataValue(DataCreative dataCreative, List<Map> list) throws Exception {
         Class<? extends DataCreative> creativeClass = dataCreative.getClass();

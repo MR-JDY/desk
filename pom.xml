@@ -75,11 +75,25 @@
         </dependency>
 
         <!-- 与远程linux服务器进行交互 -->
-        <dependency>
+        <!--<dependency>
             <groupId>ch.ethz.ganymed</groupId>
             <artifactId>ganymed-ssh2</artifactId>
             <version>262</version>
+        </dependency>-->
+        <!--远程linux服务器文件交互包 与上面ganymed二选一即可-->
+        <dependency>
+            <groupId>com.trilead</groupId>
+            <artifactId>trilead-ssh2</artifactId>
+            <version>1.0.0-build222</version>
         </dependency>
+        <!-- 远程读取文件流转成JSON字符串所需包 -->
+        <dependency>
+            <groupId>com.metaparadigm</groupId>
+            <artifactId>json-rpc</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+
         <!-- mybatis plus 代码生成器依赖 -->
         <dependency>
             <groupId>com.baomidou</groupId>
