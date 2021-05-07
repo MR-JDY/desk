@@ -18,12 +18,6 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -39,7 +33,7 @@ import java.util.*;
 @Service
 public class DataCreativeServiceImpl extends ServiceImpl<DataCreativeMapper, DataCreative> implements DataCreativeService {
 
-    public String DIR = "/opt/tb/data/2021-04-28";
+    public String DIR ;
     public String SUFFIX = ".json";
     public String PREFIX = "summary";
     @Resource
@@ -50,6 +44,7 @@ public class DataCreativeServiceImpl extends ServiceImpl<DataCreativeMapper, Dat
     {
         String currentDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         batchNum = Long.parseLong(currentDate);
+        DIR = "/opt/tb/data/"+LocalDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
     /**
      * 根据解析出来的JSON数据转换成实体类
@@ -84,12 +79,9 @@ public class DataCreativeServiceImpl extends ServiceImpl<DataCreativeMapper, Dat
     public void importCreative() {
         //遍历对应目录下所有以.json结尾的文件
         Set<String> fileAbsolutePaths = null;
-        try {
-            fileAbsolutePaths = sshServer.getFileAbsolutePaths(DIR, PREFIX, SUFFIX);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new CommonBusinessException(CommonErrorCode.EXCEL_ERROR.withArgs("Excel导入失败"));
-        }
+
+        fileAbsolutePaths = sshServer.getFileAbsolutePaths(DIR, PREFIX, SUFFIX);
+
 
         for(String path:fileAbsolutePaths){
             InputStream inputStream = sshServer.readFile(path);

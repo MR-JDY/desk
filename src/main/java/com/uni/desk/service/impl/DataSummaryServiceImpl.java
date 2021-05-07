@@ -33,7 +33,7 @@ import java.util.Set;
 @Service
 public class DataSummaryServiceImpl extends ServiceImpl<DataSummaryMapper, DataSummary> implements DataSummaryService {
 
-    public String DIR = "/opt/tb/data";
+    public String DIR ;
     public String SUFFIX = ".json";
     public String PREFIX = "summary";
     @Resource
@@ -45,17 +45,13 @@ public class DataSummaryServiceImpl extends ServiceImpl<DataSummaryMapper, DataS
     {
         String currentDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"));
         batchNum = Long.parseLong(currentDate);
+        DIR = "/opt/tb/data/"+LocalDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
     @Override
     public void importSummary() {
         //遍历对应目录下所有以.json结尾的文件
         Set<String> fileAbsolutePaths = null;
-        try {
-            fileAbsolutePaths = sshServer.getFileAbsolutePaths(DIR, PREFIX,SUFFIX);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new CommonBusinessException(CommonErrorCode.EXCEL_ERROR.withArgs("创意汇总JSON导入失败"));
-        }
+        fileAbsolutePaths = sshServer.getFileAbsolutePaths(DIR, PREFIX,SUFFIX);
         List<DataSummary> dataSummaryList = new LinkedList<>();
         for(String path:fileAbsolutePaths){
             InputStream inputStream = sshServer.readFile(path);

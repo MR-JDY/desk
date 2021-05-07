@@ -1,6 +1,8 @@
 package com.uni.desk.ssh2;
 
 import com.trilead.ssh2.Connection;
+import com.uni.desk.base.CommonBusinessException;
+import com.uni.desk.base.CommonErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -41,6 +43,7 @@ public class  SshServer {
         return null;
     }
 
+
     /**
      * 读取远程文件的文件流
      * @param path
@@ -71,7 +74,7 @@ public class  SshServer {
     public  Set<String> getFileAbsolutePaths(String dir, String suffix) throws IOException {
         return getFileAbsolutePaths(dir,"",suffix);
     }
-    public  Set<String> getFileAbsolutePaths(String dir, String prefix,String suffix) throws IOException {
+    public  Set<String> getFileAbsolutePaths(String dir, String prefix,String suffix) {
         return SshHandler.getFileAbsolutePaths(dir,getConn(),prefix,suffix);
     }
 

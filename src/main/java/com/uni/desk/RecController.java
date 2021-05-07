@@ -12,9 +12,7 @@ import com.uni.desk.entity.DataCreative;
 import com.uni.desk.entity.DataSummary;
 import com.uni.desk.entity.ReportCampaign;
 import com.uni.desk.listener.ReportCampaignListener;
-import com.uni.desk.service.DataCreativeService;
-import com.uni.desk.service.DataSummaryService;
-import com.uni.desk.service.ReportCampaignService;
+import com.uni.desk.service.*;
 import com.uni.desk.ssh2.SshHandler;
 import com.uni.desk.util.JsonUtil;
 import com.uni.desk.util.ReflectUtils;
@@ -58,7 +56,11 @@ public class RecController {
     @Resource
     private DataSummaryService dataSummaryService;
     @Resource
+    private JsonCreativeService jsonCreativeService;
+    @Resource
     private ReflectUtils reflectUtils;
+    @Resource
+    private MaterialService materialService;
 
     /**
      * 根据视频Url截取第一帧进行文字识别
@@ -125,6 +127,20 @@ public class RecController {
         dataSummaryService.importSummary();
         return null;
     }
+
+
+    @GetMapping("/importJsonCreative")
+    @ApiOperation(value = "导入接口返回的创意的JSON数据")
+    public String importJsonCreative(){
+        jsonCreativeService.importJsonCreative();
+        return null;
+    }
+
+    @GetMapping("/importMaterial")
+    @ApiOperation(value = "导入接口返回的视频素材的列表")
+    public void importMaterial(){
+        materialService.importMaterial();
+    }
     @Test
     public void indexOrNameRead() {
 
@@ -171,7 +187,7 @@ public class RecController {
     @Test
     public void getRemoteFiles() throws IOException {
         Connection conn = SshHandler.getConn("10.125.25.38", 22, "jcadmin", "admin");
-        Set<String> fileAbsolutePaths = SshHandler.getFileAbsolutePaths("/opt/tb/data", conn,".json");
+//        Set<String> fileAbsolutePaths = SshHandler.getFileAbsolutePaths("/opt/tb/data", conn,".json");
 
     }
     @Test

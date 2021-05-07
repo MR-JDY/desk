@@ -2,6 +2,8 @@ package com.uni.desk.ssh2;
 
 
 import com.trilead.ssh2.*;
+import com.uni.desk.base.CommonBusinessException;
+import com.uni.desk.base.CommonErrorCode;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
@@ -147,14 +149,22 @@ public class SshHandler {
      * @param suffix 需要获取的文件的后缀名
      * @return
      */
-    public static Set<String> getFileAbsolutePaths(String dir,Connection conn,String suffix,String prefix) throws IOException {
+    public static Set<String> getFileAbsolutePaths(String dir,Connection conn,String prefix,String suffix)  {
         //处理directory后面的"/"号
         if(!dir.endsWith("/")){
             dir += "/";
         }
         String directory =dir;
-        SFTPv3Client client = getClient(conn);
-        Vector ls = client.ls(directory);
+        SFTPv3Client client = null;
+        Vector ls = null;
+        try {
+            client = getClient(conn);
+            ls = client.ls(directory);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new CommonBusinessException(CommonErrorCode.COMMON_ERROR.withArgs("获取Client失败或访问目录"+directory+"失败"));
+        }
+
         Set collect = (Set) ls.stream().filter(obj-> {
             SFTPv3DirectoryEntry obj1 = (SFTPv3DirectoryEntry) obj;
             return obj1.filename.endsWith(suffix) && obj1.filename.startsWith(prefix);
@@ -162,6 +172,9 @@ public class SshHandler {
             SFTPv3DirectoryEntry entry1 = (SFTPv3DirectoryEntry) entry;
             return directory + entry1.filename;
         }).collect(Collectors.toSet());
+        if(collect.isEmpty()){
+            log.info("{}下没有前缀{}，后缀{}的文件",dir,prefix,suffix);
+        };
         return collect;
     }
 

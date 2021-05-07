@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.uni.desk.mapper.MaterialMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.uni.desk.entity.Material">
+        <result column="id" property="id" />
+        <result column="author_id" property="authorId" />
+        <result column="name" property="name" />
+        <result column="group_id" property="groupId" />
+        <result column="video_id" property="videoId" />
+        <result column="uid" property="uid" />
+        <result column="material_id" property="materialId" />
+        <result column="belongs" property="belongs" />
+        <result column="brand" property="brand" />
+        <result column="item" property="item" />
+        <result column="choreographer" property="choreographer" />
+        <result column="editor" property="editor" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,
+        author_id, name, group_id, video_id, uid, material_id, belongs, brand, item, choreographer, editor
+    </sql>
+
+</mapper>

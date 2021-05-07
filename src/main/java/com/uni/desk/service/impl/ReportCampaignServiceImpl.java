@@ -16,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -30,23 +32,23 @@ import java.util.Set;
 @Service
 public class ReportCampaignServiceImpl extends ServiceImpl<ReportCampaignMapper, ReportCampaign> implements ReportCampaignService {
 
-    public String DIR = "/opt/tb/data/2021-04-28";
+    public String DIR ;
     public String SUFFIX = ".xls";
     public String PREFIX = "report";
     @Resource
     private SshServer sshServer;
 
+    {
+        DIR = "/opt/tb/data/"+ LocalDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    }
     @Override
 //    @Transactional(rollbackFor = IOException.class)//数据量太大了  不建议作为事务
     public String importCampaignXls() {
         //遍历对应目录下所有以.xls结尾的文件
         Set<String> fileAbsolutePaths = null;
-        try {
-            fileAbsolutePaths = sshServer.getFileAbsolutePaths(DIR, PREFIX, SUFFIX);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new CommonBusinessException(CommonErrorCode.EXCEL_ERROR.withArgs("Excel导入失败"));
-        }
+
+        fileAbsolutePaths = sshServer.getFileAbsolutePaths(DIR, PREFIX, SUFFIX);
+
 
         for(String path:fileAbsolutePaths){
             //读取每个文件的文件流
