@@ -2,6 +2,9 @@ package com.uni.desk.base;
 
 import org.springframework.lang.Nullable;
 
+import java.util.Collection;
+import java.util.Collections;
+
 /**
  * ********************************************************
  *
@@ -65,6 +68,11 @@ public abstract class BitlandAssert {
         }
     }
 
+    public static void isEmpty(Collection collection,String msg){
+        if(collection == null && collection.size() ==0){
+            hasNoResult(msg);
+        }
+    }
     /**
      * @Author:Joe
      * @Date:Created in 14:18  2020/6/8

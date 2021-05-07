@@ -141,6 +141,13 @@ public class RecController {
     public void importMaterial(){
         materialService.importMaterial();
     }
+
+    @Test
+    public void testSplit(){
+        String[] s = "23432-334_4".split("_");
+        int length = s.length;
+    }
+
     @Test
     public void indexOrNameRead() {
 

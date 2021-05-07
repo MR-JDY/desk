@@ -13,11 +13,14 @@ import com.uni.desk.service.MaterialService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.uni.desk.ssh2.SshServer;
 import com.uni.desk.util.ReflectUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -33,11 +36,12 @@ import java.util.Set;
  * @since 2021-05-07
  */
 @Service
+@Slf4j
 public class MaterialServiceImpl extends ServiceImpl<MaterialMapper, Material> implements MaterialService {
 
     public String DIR ;
     public String SUFFIX = ".json";
-    public String PREFIX = "summary";
+    public String PREFIX = "asset";
     @Resource
     private SshServer sshServer;
     @Resource
@@ -54,15 +58,35 @@ public class MaterialServiceImpl extends ServiceImpl<MaterialMapper, Material> i
         BitlandAssert.hasResult(fileAbsolutePaths,"对应路径下不存在指定条件的文件");
         for(String path:fileAbsolutePaths){
             InputStream inputStream = sshServer.readFile(path);
+            /*BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            try {
+                StringBuilder result = new StringBuilder();
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    result.append(line);
+                }
+                log.error(result.toString());
+            } catch (Exception e) {
+                try {
+                    inputStream.close();
+                    bufferedReader.close();
+                } catch (Exception e1) {
+                }
+            }*/
+
 
             String jsonStr = null;
             try {
                 jsonStr = JSON.parseObject(inputStream, String.class, null).toString();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
-                throw new CommonBusinessException(CommonErrorCode.INVALID_FORMAT.withArgs("数据转换异常"));
+                log.debug("获取的文件{}内容为空",path);
+            }
+            if("[]".equals(jsonStr)){
+                continue;
             }
             List<Material> jsonCreatives = parseStr2JsonCreative(jsonStr);
+
             saveOrUpdateBatch(jsonCreatives);
         }
     }
@@ -73,17 +97,38 @@ public class MaterialServiceImpl extends ServiceImpl<MaterialMapper, Material> i
         objects.forEach((obj)->{
             Material material = JSONObject.toJavaObject((JSON) obj, Material.class);
 
-            JSONObject extra = material.getExtra();
-            String material_id = extra.get("material_id").toString();
-            String video_id = extra.get("video_id").toString();
+            JSONObject jsonObject = JSONObject.parseObject(material.getExtra());
+            String material_id = jsonObject.get("materialId").toString();
+            String video_id = jsonObject.get("videoId").toString();
             material.setVideoId(video_id);
             material.setMaterialId(material_id);
             material.setBatchNum(batchNum);
+
+            splitVideoName(material);
             materialArrayList.add(material);
 
 
         });
 
         return materialArrayList;
+    }
+
+    /**
+     * 切分视频名称
+     * 视频名称规则: 所属_品牌_商品_编导_剪辑
+     * @param material
+     * @return
+     */
+    private boolean splitVideoName(Material material){
+        String[] split = material.getName().split("_");
+        if(split.length > 4){
+            material.setBelongs(split[0].toString());
+            material.setBrand(split[1].toString());
+            material.setItem(split[2].toString());
+            material.setChoreographer(split[3].toString());
+            material.setEditor(split[4].toString());
+            return true;
+        }
+        return false;
     }
 }

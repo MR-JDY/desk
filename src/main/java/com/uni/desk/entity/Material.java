@@ -1,5 +1,6 @@
 package com.uni.desk.entity;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -96,7 +97,7 @@ public class Material extends BaseEntity {
      * 拉去的json中的属性，包含videoId跟materialId
      */
     @TableField(exist = false)
-    private JSONObject extra;
+    private String extra;
 
     @Override
     protected Serializable pkVal() {
