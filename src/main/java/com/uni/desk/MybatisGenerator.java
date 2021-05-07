@@ -32,7 +32,7 @@ public class MybatisGenerator {
 //        private static final String path = "/Users/xiangqiaogao/Coding/desk";
 //    private static final String path = "D:\\BitlandCloud\\bitland-middle-process\\flowable";
     private static final String tablePrefix = "ud";
-    private static final String[] tableName = {"ud_material"};
+    private static final String[] tableName = {"ud_report_campaign"};
 
     @Test
     public void testGenerator() {
