@@ -47,13 +47,16 @@ public class MaterialServiceImpl extends ServiceImpl<MaterialMapper, Material> i
     @Resource
     private ReflectUtils reflectUtils;
     private Long batchNum;
-    {
-        String currentDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-        batchNum = Long.parseLong(currentDate);
-        DIR = "/opt/tb/data/"+LocalDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-    }
+
     @Override
     public void importMaterial() {
+        //因为Spring管理的对象是单例的,所以放在构造代码块内是不能每次调用都更新的
+        {
+            String currentDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+            batchNum = Long.parseLong(currentDate);
+            DIR = "/opt/tb/data/"+LocalDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        }
+
         Set<String> fileAbsolutePaths = sshServer.getFileAbsolutePaths(DIR, PREFIX, SUFFIX);
         BitlandAssert.hasResult(fileAbsolutePaths,"对应路径下不存在指定条件的文件");
         for(String path:fileAbsolutePaths){

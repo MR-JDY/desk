@@ -41,11 +41,7 @@ public class DataCreativeServiceImpl extends ServiceImpl<DataCreativeMapper, Dat
     @Resource
     private ReflectUtils reflectUtils;
     private Long batchNum;
-    {
-        String currentDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-        batchNum = Long.parseLong(currentDate);
-        DIR = "/opt/tb/data/"+LocalDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-    }
+
     /**
      * 根据解析出来的JSON数据转换成实体类
      * @param jsonStr
@@ -77,6 +73,12 @@ public class DataCreativeServiceImpl extends ServiceImpl<DataCreativeMapper, Dat
      */
     @Override
     public void importCreative() {
+
+        {
+            String currentDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+            batchNum = Long.parseLong(currentDate);
+            DIR = "/opt/tb/data/"+LocalDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        }
         //遍历对应目录下所有以.json结尾的文件
         Set<String> fileAbsolutePaths = null;
 

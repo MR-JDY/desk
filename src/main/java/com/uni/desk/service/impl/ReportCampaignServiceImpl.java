@@ -38,12 +38,13 @@ public class ReportCampaignServiceImpl extends ServiceImpl<ReportCampaignMapper,
     @Resource
     private SshServer sshServer;
 
-    {
-        DIR = "/opt/tb/data/"+ LocalDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-    }
+
     @Override
 //    @Transactional(rollbackFor = IOException.class)//数据量太大了  不建议作为事务
     public String importCampaignXls() {
+        {
+            DIR = "/opt/tb/data/"+ LocalDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        }
         //遍历对应目录下所有以.xls结尾的文件
         Set<String> fileAbsolutePaths = null;
 

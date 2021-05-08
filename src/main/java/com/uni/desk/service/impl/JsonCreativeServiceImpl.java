@@ -42,15 +42,21 @@ public class JsonCreativeServiceImpl extends ServiceImpl<JsonCreativeMapper, Jso
 
 
     private Long batchNum;
-    {
-        String currentDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-        DIR = "/opt/tb/data/"+LocalDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        batchNum = Long.parseLong(currentDate);
-    }
+
 
 
     @Override
     public void importJsonCreative() {
+
+        {
+            String currentDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+            DIR = "/opt/tb/data/"+LocalDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            batchNum = Long.parseLong(currentDate);
+        }{
+            String currentDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+            DIR = "/opt/tb/data/"+LocalDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            batchNum = Long.parseLong(currentDate);
+        }
         Set<String> fileAbsolutePaths = sshServer.getFileAbsolutePaths(DIR, PREFIX, SUFFIX);
         BitlandAssert.hasResult(fileAbsolutePaths,"对应路径下不存在指定条件的文件");
         List<DataSummary> dataSummaryList = new LinkedList<>();

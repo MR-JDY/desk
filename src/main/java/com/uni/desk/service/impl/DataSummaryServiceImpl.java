@@ -42,13 +42,15 @@ public class DataSummaryServiceImpl extends ServiceImpl<DataSummaryMapper, DataS
     private ReflectUtils reflectUtils;
 
     private Long batchNum;
-    {
-        String currentDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"));
-        batchNum = Long.parseLong(currentDate);
-        DIR = "/opt/tb/data/"+LocalDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-    }
+
     @Override
     public void importSummary() {
+
+        {
+            String currentDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"));
+            batchNum = Long.parseLong(currentDate);
+            DIR = "/opt/tb/data/"+LocalDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        }
         //遍历对应目录下所有以.json结尾的文件
         Set<String> fileAbsolutePaths = null;
         fileAbsolutePaths = sshServer.getFileAbsolutePaths(DIR, PREFIX,SUFFIX);
