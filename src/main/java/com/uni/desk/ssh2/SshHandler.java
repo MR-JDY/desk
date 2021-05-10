@@ -56,6 +56,7 @@ public class SshHandler {
      */
     public static InputStream readFile(Connection conn, String filePath, String ip) throws IOException, InterruptedException {
         Session session = getSession(conn);
+        log.info("所读文件：{}",filePath);
         //获取文件大小
         session.execCommand("du -b ".concat(filePath));
         InputStream sizeIn = new StreamGobbler(session.getStdout());
@@ -196,8 +197,8 @@ public class SshHandler {
      * @return
      */
     public static String[] extractFileFlags(String fileName,String regex){
-        String[] split = fileName.split("\\.");
-        String fullName = split[0];
+        int index = fileName.lastIndexOf(".");
+        String fullName = fileName.substring(0, index);
         return fullName.split(regex);
     }
 
@@ -211,7 +212,11 @@ public class SshHandler {
         return strings[1];
     }
     public static void main(String[] args) {
-        String[] strings = extractFileFlags("report#润百颜#润百颜377次抛02#30天.xls","#");
-        String string = strings[strings.length - 1];
+//        String[] strings = extractFileFlags("report#润百颜#润百颜.377次抛02#30天.xls","#");
+        String s = "report#润百颜#润百颜.377次抛02#30天.xls";
+        String[] strings = extractFileFlags(s,"#");
+        int i = s.lastIndexOf(".");
+        String substring = s.substring(0, i);
+//        String string = strings[strings.length - 1];
     }
 }

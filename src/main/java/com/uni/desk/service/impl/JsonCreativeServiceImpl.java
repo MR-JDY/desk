@@ -52,11 +52,7 @@ public class JsonCreativeServiceImpl extends ServiceImpl<JsonCreativeMapper, Jso
     public void importJsonCreative() {
 
         {
-            String currentDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-            DIR = "/opt/tb/data/"+LocalDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            batchNum = Long.parseLong(currentDate);
-        }{
-            String currentDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+            String currentDate = LocalDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
             DIR = "/opt/tb/data/"+LocalDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             batchNum = Long.parseLong(currentDate);
         }

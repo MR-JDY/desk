@@ -26,7 +26,7 @@ public class BaseEntity extends Model {
     @TableId(value = "id", type = IdType.ASSIGN_UUID)
     private String id ;
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    private LocalDateTime lastModifiedDate;
+    private LocalDateTime lastModifiedDate = LocalDateTime.now();
 /*
     //创建人
     @TableField(fill = FieldFill.INSERT)
