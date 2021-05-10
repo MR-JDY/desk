@@ -146,11 +146,12 @@ public class DataSummary extends BaseEntity {
      */
     private Long batchNum;
 
-    /**
-     * 最新更新时间
-     */
-    private LocalDateTime lastModifiedDate;
 
+
+    /**
+     * 品牌名
+     */
+    private String brandName;
 
     @Override
     protected Serializable pkVal() {

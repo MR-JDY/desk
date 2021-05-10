@@ -88,10 +88,7 @@ public class Material extends BaseEntity {
      * 批次号
      */
     private Long batchNum;
-    /**
-     * 最后修改时间
-     */
-    private LocalDateTime lastModifiedDate;
+
 
     /**
      * 拉去的json中的属性，包含videoId跟materialId
@@ -99,6 +96,10 @@ public class Material extends BaseEntity {
     @TableField(exist = false)
     private String extra;
 
+    /**
+     * 品牌名
+     */
+    private String brandName;
     @Override
     protected Serializable pkVal() {
         return null;

@@ -114,7 +114,7 @@ public class ReportCampaign extends BaseEntity {
      * 转化成本（元）
      */
     @ExcelProperty("转化成本")
-    private BigDecimal converCost;
+    private BigDecimal convertCost;
 
     /**
      * 投资回报率
@@ -185,16 +185,17 @@ public class ReportCampaign extends BaseEntity {
      * 批次号
      */
     private Long batchNum;
-    /**
-     * 最后修改时间
-     */
-    private LocalDateTime lastModifiedDate;
+
 
     /**
      * 数据类型，7天,15天,30天等
      * @return
      */
     private String dataType;
+    /**
+     * 品牌名
+     */
+    private String brandName;
 
     @Override
     protected Serializable pkVal() {

@@ -9,9 +9,11 @@ import com.uni.desk.base.CommonErrorCode;
 import com.uni.desk.entity.DataCreative;
 import com.uni.desk.entity.DataSummary;
 import com.uni.desk.entity.JsonCreative;
+import com.uni.desk.entity.Material;
 import com.uni.desk.mapper.JsonCreativeMapper;
 import com.uni.desk.service.JsonCreativeService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.uni.desk.ssh2.SshHandler;
 import com.uni.desk.ssh2.SshServer;
 import com.uni.desk.util.ReflectUtils;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,7 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -62,7 +65,7 @@ public class JsonCreativeServiceImpl extends ServiceImpl<JsonCreativeMapper, Jso
         List<DataSummary> dataSummaryList = new LinkedList<>();
         for(String path:fileAbsolutePaths){
             InputStream inputStream = sshServer.readFile(path);
-
+            String brandNameByPath = SshHandler.getBrandNameByPath(path);
             String jsonStr = null;
             try {
                 jsonStr = JSON.parseObject(inputStream, String.class, null).toString();
@@ -70,8 +73,15 @@ public class JsonCreativeServiceImpl extends ServiceImpl<JsonCreativeMapper, Jso
                 e.printStackTrace();
                 throw new CommonBusinessException(CommonErrorCode.INVALID_FORMAT.withArgs("数据转换异常"));
             }
+            if(jsonStr==null){
+                continue;
+            }
             List<JsonCreative> jsonCreatives = parseStr2JsonCreative(jsonStr);
-            saveOrUpdateBatch(jsonCreatives);
+            List<JsonCreative> collect = jsonCreatives.stream().map((json) -> {
+                json.setBrandName(brandNameByPath);
+                return json;
+            }).collect(Collectors.toList());
+            saveOrUpdateBatch(collect);
         }
     }
 

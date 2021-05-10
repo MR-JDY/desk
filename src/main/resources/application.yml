@@ -8,6 +8,9 @@ spring:
     url: jdbc:mysql://120.79.158.41:3306/pro_ud_desk?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&nullCatalogMeansCurrent=true&useAffectedRows=true
     username: ud_desk
     password: ud_desk
+#    url: jdbc:mysql://120.79.158.41:3306/desk?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&nullCatalogMeansCurrent=true&useAffectedRows=true
+#    username: desk
+#    password: desk
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.zaxxer.hikari.HikariDataSource
     hikari:

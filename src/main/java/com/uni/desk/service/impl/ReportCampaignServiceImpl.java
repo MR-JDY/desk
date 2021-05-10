@@ -54,11 +54,10 @@ public class ReportCampaignServiceImpl extends ServiceImpl<ReportCampaignMapper,
         for(String path:fileAbsolutePaths){
             //读取每个文件的文件流
             InputStream inputStream = sshServer.readFile(path);
-            String fileName = SshHandler.extractFileName(path);
-            String[] split = fileName.split("#");
-            String dataType = split[split.length-1];
+            String[] strings = SshHandler.extractFileFlags(path, "#");
             HashMap<String, Object> map = new HashMap<>(12);
-            map.put("dataType",dataType);
+            map.put("dataType",strings[strings.length-1]);
+            map.put("brandName",strings[1]);
             EasyExcel.read(inputStream, ReportCampaign.class, new ReportCampaignListener(this,map)).sheet().headRowNumber(1).doRead();
             //导入文件信息到数据库
         }

@@ -189,4 +189,29 @@ public class SshHandler {
         String fileName = filePath.substring(filePath.lastIndexOf("\\")+1);
         return fileName;
     }
+
+    /**
+     * 将全路径中的名称按照特殊符号切分
+     * @param fileName
+     * @return
+     */
+    public static String[] extractFileFlags(String fileName,String regex){
+        String[] split = fileName.split("\\.");
+        String fullName = split[0];
+        return fullName.split(regex);
+    }
+
+    /**
+     * 获取品牌名
+     * @param filePath
+     * @return
+     */
+    public static String getBrandNameByPath(String filePath){
+        String[] strings = SshHandler.extractFileFlags(filePath, "#");
+        return strings[1];
+    }
+    public static void main(String[] args) {
+        String[] strings = extractFileFlags("report#润百颜#润百颜377次抛02#30天.xls","#");
+        String string = strings[strings.length - 1];
+    }
 }

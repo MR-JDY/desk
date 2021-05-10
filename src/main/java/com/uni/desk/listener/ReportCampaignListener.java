@@ -22,7 +22,7 @@ public class ReportCampaignListener extends AnalysisEventListener<ReportCampaign
     private Map map;
     private Long batchNum;
     {
-        String currentDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        String currentDate = LocalDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         batchNum = Long.parseLong(currentDate);
     }
     /**
@@ -58,6 +58,7 @@ public class ReportCampaignListener extends AnalysisEventListener<ReportCampaign
     public void invoke(ReportCampaign data, AnalysisContext context) {
         LOGGER.info("解析到一条数据:{}", JSONObject.toJSONString(data));
         data.setBatchNum(batchNum);
+        data.setBrandName(map.get("brandName").toString());
         data.setDataType(Optional.ofNullable(map.get("dataType")).orElse("").toString());
         list.add(data);
         // 达到BATCH_COUNT了，需要去存储一次数据库，防止数据几万条数据在内存，容易OOM

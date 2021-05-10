@@ -11,6 +11,7 @@ import com.uni.desk.entity.Material;
 import com.uni.desk.mapper.MaterialMapper;
 import com.uni.desk.service.MaterialService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.uni.desk.ssh2.SshHandler;
 import com.uni.desk.ssh2.SshServer;
 import com.uni.desk.util.ReflectUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +27,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -60,7 +62,10 @@ public class MaterialServiceImpl extends ServiceImpl<MaterialMapper, Material> i
         Set<String> fileAbsolutePaths = sshServer.getFileAbsolutePaths(DIR, PREFIX, SUFFIX);
         BitlandAssert.hasResult(fileAbsolutePaths,"对应路径下不存在指定条件的文件");
         for(String path:fileAbsolutePaths){
+            log.debug("所读文件：{}",path);
             InputStream inputStream = sshServer.readFile(path);
+            String s = inputStream.toString();
+            String brandNameByPath = SshHandler.getBrandNameByPath(path);
             /*BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
             try {
                 StringBuilder result = new StringBuilder();
@@ -88,9 +93,15 @@ public class MaterialServiceImpl extends ServiceImpl<MaterialMapper, Material> i
             if("[]".equals(jsonStr)){
                 continue;
             }
+            if(jsonStr==null){
+                continue;
+            }
             List<Material> jsonCreatives = parseStr2JsonCreative(jsonStr);
-
-            saveOrUpdateBatch(jsonCreatives);
+            List<Material> collect = jsonCreatives.stream().map((json) -> {
+                json.setBrandName(brandNameByPath);
+                return json;
+            }).collect(Collectors.toList());
+            saveOrUpdateBatch(collect);
         }
     }
 

@@ -16,12 +16,13 @@
         <result column="item" property="item" />
         <result column="choreographer" property="choreographer" />
         <result column="editor" property="editor" />
+        <result column="brand_name" property="brandName" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id,
-        author_id, name, group_id, video_id, uid, material_id, belongs, brand, item, choreographer, editor
+        author_id, name, group_id, video_id, uid, material_id, belongs, brand, item, choreographer, editor,brand_name
     </sql>
 
 </mapper>

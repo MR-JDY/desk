@@ -177,7 +177,10 @@ public class JsonCreative extends BaseEntity {
      */
     private Long batchNum;
 
-
+    /**
+     * 品牌名
+     */
+    private String brandName;
     @Override
     protected Serializable pkVal() {
         return null;
