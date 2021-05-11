@@ -1,0 +1,9 @@
+datasource:
+  url: jdbc:mysql://120.79.158.41:3306/pro_ud_desk?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&nullCatalogMeansCurrent=true&useAffectedRows=true
+  username: ud_desk
+  password: ud_desk
+
+server-info:
+  ip: 47.119.186.25
+  username: root
+  password: jichuangmeiaoadmin123!

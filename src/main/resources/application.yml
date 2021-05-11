@@ -2,15 +2,16 @@ server:
   port: 8082
 
 spring:
+  profiles:
+    active: @profile.active@
+  #打包的时候用mvn clean package -Dprofile.active=dev -Dmaven.test.skip=true   来打包对应环境的配置，如果是正式环境dev改成prod，然后在maven中执行，运行的则是正式环境的数据
   #数据源
   #如果使用p6spy的springboot包，则不需要指定url跟driver为对应所需，否则会输出两次日志
   datasource:
-    url: jdbc:mysql://120.79.158.41:3306/pro_ud_desk?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&nullCatalogMeansCurrent=true&useAffectedRows=true
-    username: ud_desk
-    password: ud_desk
-#    url: jdbc:mysql://120.79.158.41:3306/desk?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&nullCatalogMeansCurrent=true&useAffectedRows=true
-#    username: desk
-#    password: desk
+    url: ${datasource.url}
+    username: ${datasource.username}
+    password: ${datasource.password}
+
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.zaxxer.hikari.HikariDataSource
     hikari:
@@ -47,11 +48,7 @@ mybatis-plus:
 
 
 #存放unidesk数据的服务器信息
-#server-info:
-#  ip: 10.125.25.38
-#  username: jcadmin
-#  password: admin
 server-info:
-  ip: 47.119.186.25
-  username: root
-  password: jichuangmeiaoadmin123!
+  ip: ${server-info.ip}
+  username: ${server-info.username}
+  password: ${server-info.password}

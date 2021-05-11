@@ -1,0 +1,8 @@
+datasource:
+    url: jdbc:mysql://120.79.158.41:3306/desk?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&nullCatalogMeansCurrent=true&useAffectedRows=true
+    username: desk
+    password: desk
+server-info:
+  ip: 10.125.25.38
+  username: jcadmin
+  password: admin

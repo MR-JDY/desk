@@ -95,9 +95,10 @@ public class RecController {
     }
 
     /**
-     * 导入创意JSON
+     * 导入创意JSON 作废
      * @return
      */
+    @Deprecated
     @GetMapping("/importCreative")
     @ApiOperation(value = "导入创意JSON")
     @Transactional(rollbackFor = SQLException.class)
@@ -141,7 +142,7 @@ public class RecController {
     public void importMaterial(){
         materialService.importMaterial();
     }
-
+//##################################################以下均为测试########################################################
     @Test
     public void testSplit(){
         String[] s = "23432-334_4".split("_");

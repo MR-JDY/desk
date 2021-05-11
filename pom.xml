@@ -192,12 +192,65 @@
 
     </dependencies>
 
+    <!--多环境配置-->
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <!--默认激活开发环境-->
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <!--profile.active对应application.yml中的@profile.active@-->
+                <profile.active>dev</profile.active>
+            </properties>
+
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <profile.active>prod</profile.active>
+            </properties>
+
+        </profile>
+    </profiles>
     <build>
+        <resources>
+            <!--排除配置文件-->
+            <resource>
+                <directory>src/main/resources</directory>
+                <!--先排除所有的配置文件-->
+                <excludes>
+                    <!--使用通配符，当然可以定义多个exclude标签进行排除-->
+                    <exclude>application*.yml</exclude>
+                </excludes>
+            </resource>
+            <!--根据激活条件引入打包所需的配置和文件-->
+            <resource>
+                <directory>src/main/resources</directory>
+                <!--引入所需环境的配置文件-->
+                <filtering>true</filtering>
+                <!--先排除所有的配置文件-->
+                <includes>
+                    <include>application.yml</include>
+                    <!--根据maven选择环境导入配置文件-->
+                    <include>application-${profile.active}.yml</include>
+                </includes>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>2.4.4</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <configuration>
+                    <delimiters>@</delimiters>
+                    <useDefaultDelimiters>false</useDefaultDelimiters>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -211,6 +264,16 @@
             </plugin>
         </plugins>
 
+
+
+
+
+
+
     </build>
+
+
+
+
 
 </project>
