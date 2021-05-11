@@ -85,7 +85,9 @@ public class MaterialServiceImpl extends ServiceImpl<MaterialMapper, Material> i
 
             String jsonStr = null;
             try {
-                jsonStr = JSON.parseObject(inputStream, String.class, null).toString();
+                Object o = JSON.parseObject(inputStream, String.class, null);
+                if(o == null){continue;}
+                jsonStr = o.toString();
             } catch (Exception e) {
                 e.printStackTrace();
                 log.debug("获取的文件{}内容为空",path);

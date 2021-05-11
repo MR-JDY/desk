@@ -58,7 +58,12 @@ public class ReportCampaignServiceImpl extends ServiceImpl<ReportCampaignMapper,
             HashMap<String, Object> map = new HashMap<>(12);
             map.put("dataType",strings[strings.length-1]);
             map.put("brandName",strings[1]);
-            EasyExcel.read(inputStream, ReportCampaign.class, new ReportCampaignListener(this,map)).sheet().headRowNumber(1).doRead();
+            try{
+                EasyExcel.read(inputStream, ReportCampaign.class, new ReportCampaignListener(this,map)).sheet().headRowNumber(1).doRead();
+            }catch (Exception e){
+                e.printStackTrace();
+                continue;
+            }
             //导入文件信息到数据库
         }
         return null;

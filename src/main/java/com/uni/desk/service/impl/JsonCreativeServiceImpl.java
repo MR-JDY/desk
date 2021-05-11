@@ -64,8 +64,10 @@ public class JsonCreativeServiceImpl extends ServiceImpl<JsonCreativeMapper, Jso
             String brandNameByPath = SshHandler.getBrandNameByPath(path);
             String jsonStr = null;
             try {
-                jsonStr = JSON.parseObject(inputStream, String.class, null).toString();
-            } catch (IOException e) {
+                Object o = JSON.parseObject(inputStream, String.class, null);
+                if(o == null){continue;}
+                jsonStr = o.toString();
+            } catch (Exception e) {
                 e.printStackTrace();
                 throw new CommonBusinessException(CommonErrorCode.INVALID_FORMAT.withArgs("数据转换异常"));
             }

@@ -56,7 +56,7 @@ public class ReportCampaignListener extends AnalysisEventListener<ReportCampaign
      */
     @Override
     public void invoke(ReportCampaign data, AnalysisContext context) {
-        LOGGER.info("解析到一条数据:{}", JSONObject.toJSONString(data));
+//        LOGGER.info("解析到一条数据:{}", JSONObject.toJSONString(data));
         data.setBatchNum(batchNum);
         data.setBrandName(map.get("brandName").toString());
         data.setDataType(Optional.ofNullable(map.get("dataType")).orElse("").toString());
@@ -77,7 +77,7 @@ public class ReportCampaignListener extends AnalysisEventListener<ReportCampaign
     public void doAfterAllAnalysed(AnalysisContext context) {
         // 这里也要保存数据，确保最后遗留的数据也存储到数据库
         saveData();
-        LOGGER.info("所有数据解析完成！");
+        LOGGER.info("此批所有数据解析完成！");
     }
     /**
      * 加上存储数据库
