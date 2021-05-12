@@ -59,6 +59,7 @@ public class DataSummaryServiceImpl extends ServiceImpl<DataSummaryMapper, DataS
         for(String path:fileAbsolutePaths){
             InputStream inputStream = sshServer.readFile(path);
             String brandNameByPath = SshHandler.getBrandNameByPath(path);
+            String nameByPath = SshHandler.getAccountNameByPath(path);
             Object o = null;
             try {
                 o = JSON.parseObject(inputStream, String.class, null);
@@ -73,6 +74,7 @@ public class DataSummaryServiceImpl extends ServiceImpl<DataSummaryMapper, DataS
             try {
                 summary= (DataSummary) reflectUtils.convertMap2Model(summary, data);
                 summary.setBatchNum(batchNum);
+                summary.setAccountName(nameByPath);
                 summary.setBrandName(brandNameByPath);
                 dataSummaryList.add(summary);
             } catch (Exception e) {

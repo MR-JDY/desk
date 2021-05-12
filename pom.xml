@@ -189,6 +189,13 @@
             <version>${mybatis-plus.version}</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.nepxion/banner -->
+        <dependency>
+            <groupId>com.nepxion</groupId>
+            <artifactId>banner</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+
 
     </dependencies>
 

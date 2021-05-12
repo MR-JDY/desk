@@ -104,9 +104,6 @@ public class RecController {
     @Transactional(rollbackFor = SQLException.class)
     public String importCreative(){
         dataCreativeService.importCreative();
-        /*String jsonStr = JsonUtil.readJsonFile("/Users/xiangqiaogao/Coding/desk/src/main/resources/A.json");
-        List<DataCreative> dataCreatives = dataCreativeService.parseStr2DataCreative(jsonStr);
-        dataCreativeService.saveBatch(dataCreatives);*/
         return "成功";
     }
 
@@ -142,6 +139,9 @@ public class RecController {
     public void importMaterial(){
         materialService.importMaterial();
     }
+
+
+
 //##################################################以下均为测试########################################################
     @Test
     public void testSplit(){

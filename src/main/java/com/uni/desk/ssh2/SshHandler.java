@@ -211,6 +211,17 @@ public class SshHandler {
         String[] strings = SshHandler.extractFileFlags(filePath, "#");
         return strings[1];
     }
+
+    /**
+     * 获取账号名
+     * @param filePath
+     * @return
+     */
+    public static String getAccountNameByPath(String filePath){
+        String[] strings = SshHandler.extractFileFlags(filePath, "#");
+        return strings[2];
+    }
+
     public static void main(String[] args) {
 //        String[] strings = extractFileFlags("report#润百颜#润百颜.377次抛02#30天.xls","#");
         String s = "report#润百颜#润百颜.377次抛02#30天.xls";
